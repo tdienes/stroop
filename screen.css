@@ -1,0 +1,41 @@
+#checkCSS {display:none;}
+BODY {margin:0;background:#FFF;color:#000;}
+
+#checkJavaScript {background:#FFF;color:#000;border:5px solid #F00;padding:1em;}
+    #checkJavaScript H1 {color:#900;border-bottom:1px solid #900;
+      font-family:sans-serif;}
+
+#clientbox {background:#FFF;color:#000;padding:1em;}
+    #clientbox H1 {margin:0;text-align:center;}
+    #colorkey {float:right;border:2px solid #000;margin-top:1em;
+      margin-right:2em;color:#000;}
+        #colorkey_head TH {text-align:left;border-bottom:1px solid #000;}
+        #colorkey_red_color {background:#F00;color:#FFF;}
+        #colorkey_yellow_color {background:#FF0;color:#000;}
+        #colorkey_green_color  {background:#0F0;color:#000;}
+        #colorkey_blue_color   {background:#55F;color:#FFF;}
+        #colorkey_cancel_color {background:#CCC;color:#000;}
+        .colorkey_key INPUT {text-align:left;font-family:monospace;
+              text-align:center;background:#FFF;border:1px solid #FFF;width:2em;
+              height:1.8em;}
+        #buttonEditKeys {width:100%;}
+    #infoswitch {}
+        #linkToResults {display:none;font-weight:bold;}
+
+
+.screenText {background:#FFF;color:#000;padding:2em;border-top:1px dashed #000;}
+    .screenText h2 {text-align:center;}
+
+#screenInstructions {display:none;}
+#screenInformation {display:none;}
+#screenResults {display:none;}
+    #screenResults_div {text-align:center;}
+        #textareaResults {}
+#screenExperiment {text-align:center;padding-top:5%;width:100%;
+  border-top:3px dashed #000;padding-bottom:5%;}
+    #consoleExperiment {padding:0;}
+        #screenExperiment input {text-align:center;font-weight:bold;cursor:default;}
+        #displayOfColoredWord {background:#000;font-family:serif;font-size:2.3em;}
+        #displayOfMessage {background:#FFF;width:100%;cursor:default;border:0;}
+
+

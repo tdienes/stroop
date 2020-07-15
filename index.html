@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<!--
+
+Stroop Effect - An XHTML 1.0 Strict JavaScript based Interactive Program
+Copyright (C) 2005  Edward Z. Yang <edwardzyang@thewritingpot.com>
+Updates 2020 Thomas J. Dienes <tdienes@mit.edu>
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+<!--
+
+Theoretically, you can remove this section, but it would be nice if you didn't.
+This is my first JavaScript program, so it's a bit rough around the edges
+(especially the fact that I shy totally away from NodeWalker and friends). Plus,
+it'd be a pain to reconfigure. But hey, this syntax is new, and it took me
+a long time to figure out that objects were passed by reference. That caused
+problems.
+
+As you can see above, this program is licensed under the GNU General Public
+License. If you're not aware of the Free Software Foundation or similar
+movements I suggest you check it out. The idea of these movements is that these
+programs are free as in freedom. You can edit, you can redistribute, you
+can use them freely. In fact, that would be great if you put this on your
+website! Just make sure you keep the disclaimers.
+
+By the way, this HTML document incorporates material from Wikipedia
+( http://en.wikipedia.org/ ) the free encyclopedia. Go check it out, will you?
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-
+ShareAlike License. To view a copy of this license, visit
+  http://creativecommons.org/licenses/by-nc-sa/2.5/
+or send a letter to
+  Creative Commons,
+  543 Howard Street, 5th Floor,
+  San Francisco, California, 94105, USA.
+
+-->
+
+<!-- Mirrored from ezyang.com/stroop/ by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Jul 2020 23:26:29 GMT -->
+<head>
+    <title>Stroop Effect - Interactive Test</title>
+    <meta name="Author" content="Edward Z. Yang" />
+    <meta name="keywords" content="Stroop Effect, test, interactive, JavaScript" />
+    <meta http-equiv="Content-Script-Type" content="javascript" />
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <link href="screen.css" media="screen" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="classes.js" defer="defer"></script>
+    <script type="text/javascript" src="painter.js" defer="defer"></script>
+    <script type="text/javascript" src="script.js" defer="defer"></script>
+</head>
+<body onload="ini();" id="body">
+    <noscript>
+        <div id="checkJavaScript">
+            <h1>Warning: JavaScript is Disabled</h1>
+            <p>It looks like your user agent cannot handle
+            JavaScript. We're sorry, but you cannot use the interactive features
+            on this page, as, by its nature, it is a JavaScript driven of example
+            of the Stroop effect. Consider getting a
+            <a href="http://www.mozilla.org/products/firefox/">better browser</a>
+            or enabling JavaScript if you would like to try the example.</p>
+        </div>
+    </noscript>
+    
+    <div id="clientbox">
+        <h1>Stroop Effect - Interactive Test</h1>
+        <table id="colorkey" cellspacing="0">
+            <thead>
+                <tr><th colspan="6">Color to Key</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="colorkey_red_color">Red</td>
+                    <td id="colorkey_red_key" class="colorkey_key">
+                    <input id="colorkey_red_input" value="r" type="text"
+                      readonly="readonly" size="1" maxlength="1" />
+                    </td>
+                    <td id="colorkey_green_color">Green</td>
+                    <td id="colorkey_green_key" class="colorkey_key">
+                    <input id="colorkey_green_input" value="g" type="text"
+                      readonly="readonly" size="1" maxlength="1" />
+                    </td>
+                    <td id="colorkey_cancel_color">Cancel</td>
+                    <td id="colorkey_cancel_key" class="colorkey_key">
+                    <input id="colorkey_cancel_input" value="x" type="text"
+                      readonly="readonly" size="1" maxlength="1" />
+                    </td>
+                </tr>
+                <tr>
+                    <td id="colorkey_yellow_color">Yellow</td>
+                    <td id="colorkey_yellow_key" class="colorkey_key">
+                    <input id="colorkey_yellow_input" value="y" type="text"
+                      readonly="readonly" size="1" maxlength="1" />
+                    </td>
+                    <td id="colorkey_blue_color">Blue</td>
+                    <td id="colorkey_blue_key" class="colorkey_key">
+                    <input id="colorkey_blue_input" value="b" type="text"
+                      readonly="readonly" size="1" maxlength="1" />
+                    </td>
+                    <td colspan="2">
+                    <input type="submit" value="Edit" onclick="eventEditKeys();"
+                      id="buttonEditKeys" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div id="infoswitch">
+            <ul>
+                <li><a href="#instructions"
+                onclick="displayScreen('instructions');return false;
+                ">Instructions</a></li>
+                
+                <li><a href="#information"
+                onclick="displayScreen('information');return false;
+                ">What is the Stroop effect?</a></li>
+                
+                <li><label for="input">Try the experiment: </label>
+                <input id="input" onkeyup="eventInput();" maxlength="1"
+                  type="text" onfocus="eventInput();" onblur="paintMessage('');" /></li>
+                
+                <li id="linkToResults"><a href="#results" onclick="displayScreen('results');return false;
+                ">View Results</a> or you can <a href="index.html">Retry</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div id="screenExperiment">
+        <div><input type="text" readonly="readonly" id="displayOfColoredWord" /></div>
+        <div><input type="text" readonly="readonly" id="displayOfMessage" /></div>
+    </div>
+    
+    <div id="screenInstructions" class="screenText">
+        <h2>Instructions</h2>
+        <p>Start the program by focusing on the text box and pressing the
+        space bar. Stare at the dot on the screen. When the colored word
+        appears, press the key corresponding to the <em>color</em> of the word,
+        not what it says. If you get it wrong, you will be retested on it
+        later in the trial.</p>
+        <p>If at any time you brainfreeze or are distracted by something during
+        the identification of the color, you can press the &quot;Cancel&quot;
+        key (default is <code>x</code>). The word will be shuffled back into
+        the trials and you'll encounter it later. (Minor caveat: if it's your
+        last trial, you'll simply be retested on it again and again until you
+        get it right. Just thought you might like to know.)</p>
+        <p>When there is a status message on the screen, the timer is stopped,
+        and you can take a break, or view the instructions again. If there is
+        a dot or a colored word, the timer will not stop if you skip to another
+        place, like Instructions, so you will have to invalidate that trial.</p>
+        <p>You can edit the keys for the colors to something more comfortable.
+        Simply press the <code>Edit</code> button, and then modify the text fields as you see
+        fit, then press <code>Set</code>. Changes are not remembered.</p>
+    </div>
+    
+    <div id="screenInformation" class="screenText">
+        <h2>More Information</h2>
+        <p>The <b>Stroop effect</b> in <a href="http://en.wikipedia.org/wiki/Psychology"
+        title="Psychology">psychology</a> is a demonstration of interference in
+        the <a href="http://en.wikipedia.org/wiki/Reaction_time"
+        title="Reaction time">reaction time</a> of a task. When a word such as
+        blue, green, red, etc. is printed in a <a href="http://en.wikipedia.org/wiki/Color"
+        title="Color">color</a> differing from the color expressed by the
+        word's <a href="http://en.wikipedia.org/wiki/Semantics"
+        title="Semantics">semantic</a> meaning (ie. the word red printed in blue
+        ink), a delay occurs in the processing of the word's color, leading to
+        slower test reaction times and an increase in mistakes. The effect is
+        named after its discover, <a href="http://en.wikipedia.org/wiki/John_Ridley_Stroop"
+        title="John Ridley Stroop">John Ridley Stroop</a>, and was first noted
+        in an article <i>Studies of interference in serial verbal reactions</i>
+        published in the Journal of Experimental Psychology in
+        <a href="http://en.wikipedia.org/wiki/1935" title="1935">1935</a>.</p>
+        <p>This section is licensed under the
+        <a href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License</a>.
+        It uses material from the <a
+        href="http://en.wikipedia.org/wiki/Stroop_effect">Wikipedia article
+        &quot;Stroop effect&quot;</a>.</p>
+    </div>
+    
+    <div id="screenResults" class="screenText">
+        <h2>Results</h2>
+        <div id="screenResults_div"><textarea id="textareaResults" rows="20" cols="70" readonly="readonly">You have not finished the experiment yet!
+Come back when you've done all the colors, and your results will be here.</textarea></div>
+    </div>
+</body>
+
+</html>
